@@ -1,0 +1,21 @@
+---
+- name: Ensure fail2ban service is installed
+  apt: 
+    name: fail2ban
+    state: present
+
+- name: Enable service fail2ban
+  systemd:
+    name: fail2ban
+    enabled: yes
+
+- name: Copy jail.local
+  copy:
+    src: jail.local
+    dest: /etc/fail2ban
+
+- name: Restart service fail2ban
+  systemd:
+    name: fail2ban
+    state: restarted
+    daemon_reload: yes

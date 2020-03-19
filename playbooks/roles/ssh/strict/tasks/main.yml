@@ -1,0 +1,101 @@
+---
+- name: Activate strict mode
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^StrictModes"
+    line: "StrictModes yes"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow root SSH access
+  lineinfile: 
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: 
+    - restart sshd
+  when: not root_login
+
+- name: RSA authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^RSAAuthentication"
+    line: "RSAAuthentication yes"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Public key Authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PubkeyAuthentication"
+    line: "PubkeyAuthentication yes"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Ignore Rhosts
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^IgnoreRhosts"
+    line: "IgnoreRhosts yes"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow RhostsRSAAuthentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^RhostsRSAAuthentication"
+    line: "RhostsRSAAuthentication no"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow HostbasedAuthentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^HostbasedAuthentication"
+    line: "HostbasedAuthentication no"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow empty password
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitEmptyPasswords"
+    line: "PermitEmptyPasswords no"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow response authentication challenge
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^ChallengeResponseAuthentication"
+    line: "ChallengeResponseAuthentication no"
+    state: present
+  notify:
+    - restart sshd
+
+
+- name: Disallow SSH password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify:
+    - restart sshd
+
+- name: Disallow SSH GSS API authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^GSSAPIAuthentication"
+    line: "GSSAPIAuthentication no"
+    state: present
+  notify:
+    - restart sshd

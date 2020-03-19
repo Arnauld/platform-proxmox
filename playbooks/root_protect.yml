@@ -1,0 +1,47 @@
+---
+- hosts: all
+  gather_facts: no
+
+  # prompt can be skipped, if variable is provided in CLI
+  # e.g.:       --extra-vars "root_new_password=..."
+  vars_prompt:
+    - name: "root_new_password"
+      prompt: "Root new password"
+      confirm: yes
+      private: yes
+
+  tasks:
+    - name: Hack proxmox fresh Install
+      stat: 
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+      register: proxmox_enterprise_pve
+
+    - name: Hack proxmox fresh Install (is necessary)
+      command: mv /etc/apt/sources.list.d/pve-enterprise.list /etc/apt/sources.list.d/pve-enterprise.list.bak
+      when: is_proxmox and proxmox_enterprise_pve.stat.exists
+
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt:
+        update_cache: yes
+
+    - name: Install sudo
+      apt:
+        name: sudo
+        state: present
+
+    - name: "Create sudoers {{ sudoers }}" 
+      include_role:
+        name: users/sudoers
+
+    - name: Change root password
+      user:
+        name: root
+        password: "{{ root_new_password }}"
+ 
+    - include_role:
+        name: ssh/strict
+      vars:
+        root_login: false
+    
+    - include_role:
+        name: fail2ban
