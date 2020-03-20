@@ -1,0 +1,10 @@
+---
+- hosts: all
+  gather_facts: no
+  become: true
+
+  tasks:
+    - name: Setup proxmox
+      include_role:
+        name: proxmox/setup 
+    
