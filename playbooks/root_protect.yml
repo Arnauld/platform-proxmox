@@ -32,7 +32,7 @@
     - name: Change root password
       user:
         name: root
-        password: "{{ root_new_password }}"
+        password: "{{ root_new_password | password_hash('sha512')  }}"
  
     - include_role:
         name: ssh/strict
