@@ -10,11 +10,20 @@
     enabled: yes
 
 - name: Copy jail.local
-  copy:
-    src: jail.local
-    dest: /etc/fail2ban
+  template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: 755
 
-- name: Restart service fail2ban
+- name: Copy proxmox.conf
+  copy:
+    src: proxmox.conf
+    dest: /etc/fail2ban/filter.d/
+  when: (proxmox_mode|default('none')) != 'none'
+
+- name: Restart service fail2ban 
   systemd:
     name: fail2ban
     state: restarted

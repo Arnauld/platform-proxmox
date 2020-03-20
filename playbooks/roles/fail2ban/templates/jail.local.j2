@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+
+[DEFAULT]
+ignoreip = 127.0.0.1 
+
+# Ban hosts for one hour:
+bantime = 3600
+
+# Override /etc/fail2ban/jail.d/00-firewalld.conf:
+banaction = iptables-multiport
+
+[sshd]
+enabled = true
+
+{% if ((proxmox_mode is not none) and (proxmox_mode != "none")) %}
+[proxmox]
+enabled = true
+port    = https,http,8006
+filter  = proxmox
+logpath = /var/log/daemon.log
+{% endif %}
