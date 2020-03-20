@@ -1,0 +1,9 @@
+---
+- name: Hack proxmox fresh Install
+  stat: 
+    path: /etc/apt/sources.list.d/pve-enterprise.list
+  register: proxmox_enterprise_pve
+
+- name: Hack proxmox fresh Install (if necessary)
+  command: mv /etc/apt/sources.list.d/pve-enterprise.list /etc/apt/sources.list.d/pve-enterprise.list.bak
+  when: (proxmox_mode|default('none')) == "free" and proxmox_enterprise_pve.stat.exists

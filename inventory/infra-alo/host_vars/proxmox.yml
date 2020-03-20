@@ -1,2 +1,2 @@
 ---
-is_proxmox: true
+proxmox_mode: "free"

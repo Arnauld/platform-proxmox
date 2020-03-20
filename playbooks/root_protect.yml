@@ -12,13 +12,8 @@
 
   tasks:
     - name: Hack proxmox fresh Install
-      stat: 
-        path: /etc/apt/sources.list.d/pve-enterprise.list
-      register: proxmox_enterprise_pve
-
-    - name: Hack proxmox fresh Install (is necessary)
-      command: mv /etc/apt/sources.list.d/pve-enterprise.list /etc/apt/sources.list.d/pve-enterprise.list.bak
-      when: is_proxmox and proxmox_enterprise_pve.stat.exists
+      include_role:
+        name: proxmox/init 
 
     - name: Run the equivalent of "apt-get update" as a separate step
       apt:
