@@ -7,3 +7,12 @@
 - name: Hack proxmox fresh Install (if necessary)
   command: mv /etc/apt/sources.list.d/pve-enterprise.list /etc/apt/sources.list.d/pve-enterprise.list.bak
   when: (proxmox_mode|default('none')) == "free" and proxmox_enterprise_pve.stat.exists
+
+#- name: 'switch to community repos'
+#  apt_repository:
+#    repo: 'deb https://enterprise.proxmox.com/debian/pve stretch pve-enterprise'
+#    state: 'absent'
+#  apt_repository:
+#    repo: 'deb http://download.proxmox.com/debian/pve stretch pve-no-subscription'
+#    state: 'present'
+#  when: (proxmox_mode|default('none')) == "free"

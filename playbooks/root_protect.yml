@@ -1,6 +1,7 @@
 ---
 - hosts: all
   gather_facts: no
+  become: true
 
   # prompt can be skipped, if variable is provided in CLI
   # e.g.:       --extra-vars "root_new_password=..."
@@ -24,9 +25,9 @@
         name: sudo
         state: present
 
-    - name: "Create sudoers {{ sudoers }}" 
+    - name: "Create sudoers and users" 
       include_role:
-        name: users/sudoers
+        name: users/declare
 
     - name: Change root password
       user:

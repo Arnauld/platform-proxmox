@@ -12,19 +12,30 @@
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: visudo -cf %s
 
-- name: Add {{ sudoers }} users to wheel group
+- name: Add {{ sudoers }} sudoers to wheel group
   user:
     name: "{{ item }}"
     groups: wheel
     append: yes
     state: present 
     createhome: yes
-  with_items: "{{ sudoers }}"
+  with_items: "{{ sudoers|default([]) }}"
+
+- name: Add {{ users }} users to default group
+  user:
+    name: "{{ item }}"
+    append: yes
+    state: present 
+    createhome: yes
+  with_items: "{{ users|default([]) }}"
 
 - name: Add SSH public keys
   authorized_key:
     user: "{{ item }}"
     state: present
-    key: "{{ lookup('file', '../pub_keys/{{ item }}.pub') }}"
-  with_items: "{{ sudoers }}"
+    # authorized keys are only made of the followings, used to retract previous ones
+    exclusive: yes
+    key: "{{ lookup('pipe', 'cat ../pub_keys/{{ item }}/*.pub') }}"
+  with_items: "{{ sudoers|default([])|list + users|default([])|list }}"
   when: personal_pubkey|default(true)
+  
