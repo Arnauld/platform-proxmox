@@ -1,2 +1,4 @@
 ---
 proxmox_mode: "free"
+contact_mail: "arnauld.loyer@gmail.com"
+domain_name: proxmox.technbolts.org

@@ -27,3 +27,8 @@ ssh workaround (see [Warning unprotected private key](https://www.howtogeek.com/
 ```
 ansible-playbook -i inventory/infra-alo/proxmox playbooks/root_protect.yml -u root -vvv
 ```
+
+```
+ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_setup.yml -u arnauld -vvv
+```
+

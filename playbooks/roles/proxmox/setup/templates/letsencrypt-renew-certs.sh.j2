@@ -1,0 +1,5 @@
+#! /bin/bash
+# {{ ansible_managed }}
+
+cp /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem /etc/pve/local/pveproxy-ssl.pem
+cp /etc/letsencrypt/live/{{ domain_name }}/privkey.pem /etc/pve/local/pveproxy-ssl.key

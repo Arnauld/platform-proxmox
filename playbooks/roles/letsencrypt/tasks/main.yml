@@ -1,0 +1,29 @@
+---
+- name: Install certbot
+  become: yes
+  apt: 
+    name: certbot 
+    state: latest
+
+- name: certbot in standalone mode for '{{ domain_name }}'
+  command: "certbot certonly --standalone -m {{ contact_mail }} -d {{ domain_name }} -n -vvv --agree-tos"
+  register: certbot_output
+  when: not (certbot_cron_only|default(false))
+
+- name: debug
+  debug:
+    var: certbot_output
+  when: certbot_output
+
+- name: trigger post hook
+  become: true
+  command: "{{ certbot_post_hook }}"
+
+- name: cron renew
+  become: true
+  cron:
+    name: "letsencrypt {{ domain_name }}"
+    minute: 0
+    hour: 0,12
+    user: root
+    job: "/usr/bin/certbot renew --quiet --post-hook {{ certbot_post_hook }}"

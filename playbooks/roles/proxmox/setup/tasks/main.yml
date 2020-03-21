@@ -23,17 +23,28 @@
     name: 'pip'
     state: 'latest'
 
-- name: 'Install dependencies'
+- name: 'Install python dependencies'
   pip:
     executable: 'pip3'
-    name: 'setuptools'
+    name: ['setuptools', 'virtualenv', 'proxmoxer']
     state: 'latest'
-  pip:
-    executable: 'pip3'
-    name: 'virtualenv'
-    state: 'latest'
-  pip:
-    executable: 'pip3'
-    name: 'proxmoxer'
-    state: 'latest'
+
+- name: https certificate - prepare post hoot script
+  template:
+    src: letsencrypt-renew-certs.sh.j2
+    dest: /usr/local/bin/renew-pve-certs.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: https certificate - let's encrypt
+  include_role:
+    name: letsencrypt
+  vars:
+    certbot_post_hook: /usr/local/bin/renew-pve-certs.sh
   
+- name: Restart service pveproxy 
+  systemd:
+    name: pveproxy
+    state: restarted
+    daemon_reload: yes
