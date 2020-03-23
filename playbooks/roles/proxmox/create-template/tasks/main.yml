@@ -1,0 +1,37 @@
+---
+- name: Create images folder
+  file:
+    path: /opt/proxmox/images
+    state: directory
+
+- name: Download image
+  get_url: 
+    url: "{{ image_url }}"
+    dest: "/opt/proxmox/images/{{ image_id }}.img"
+
+- name: Check if vm {{ vm_id }} already exists first...
+  include_role: 
+    name: proxmox/check-and-destroy-vm
+  vars:
+    vm_id_to_check: "{{ vm_id }}"
+
+- name: Create VM with {{ vm_memory }} B de RAM + une interface réseau connectée au bridge vmbr0   
+  command: qm create {{ vm_id }} --memory {{ vm_memory }} --net0 virtio,bridge=vmbr0 --name {{ image_id }} --description {{ image_url }}
+
+- name: Import VM image
+  command: qm importdisk {{ vm_id }} /opt/proxmox/images/{{ image_id }}.img local
+
+- name: Add virtual disk
+  command: qm set {{ vm_id }} --scsihw virtio-scsi-pci --scsi0 local:{{ vm_id }}/vm-{{ vm_id }}-disk-0.raw
+
+- name: Add cloudinit disk
+  command: qm set {{ vm_id }} --ide2 local:cloudinit
+
+- name: Set boot disk for VM
+  command: qm set {{ vm_id }} --boot c --bootdisk scsi0
+
+- name: Add vga interface on serial
+  command: qm set {{ vm_id }} --serial0 socket --vga serial0
+
+- name: Transform VM into template
+  command: qm template {{ vm_id }}

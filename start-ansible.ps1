@@ -5,4 +5,5 @@ Write-Output "=================================="
 docker run --rm  `
     -v C:\Users\x2023576\projects\trv\platform:/root/platform `
     -v C:\Users\x2023576\.ssh:/root/.ssh.ref `
+    -v C:\Users\x2023576\.vault:/root/.vault.ref `
     -it trv/ansible /bin/bash

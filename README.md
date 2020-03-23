@@ -6,6 +6,22 @@
 cat ~/.ssh/id_rsa.pub | ssh root@proxmox.technbolts.org 'cat >> ~/.ssh/authorized_keys'
 ```
 
+## Vault
+
+```bash
+$ echo "Super mot de passe secret!" >> ~/.vault/test-pass-ansible.txt
+$ ansible-vault encrypt_string password123 --vault-password-file ~/.vault/test-pass-ansible.txt
+```
+
+```
+```
+
+References
+
+* https://docs.ansible.com/ansible/latest/cli/ansible-vault.html#ansible-vault-encrypt-string
+* https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html#single-encrypted-variable
+
+
 ## Windows :cry:
 
 [Autoriser l'exécution de scripts](https://openclassrooms.com/fr/courses/3664366-creez-votre-premier-script-avec-powershell#/id/r-3772536)
@@ -32,3 +48,6 @@ ansible-playbook -i inventory/infra-alo/proxmox playbooks/root_protect.yml -u ro
 ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_setup.yml -u arnauld -vvv
 ```
 
+```
+ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_create_template.yml -u arnauld -vvv
+```

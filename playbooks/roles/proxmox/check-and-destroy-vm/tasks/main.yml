@@ -1,0 +1,24 @@
+---
+- name: Check if vm already exists...
+  command: qm list
+  register: existing_vms
+
+- set_fact:
+    vm_already_exists_pattern: "{{ vm_id_to_check }} "
+
+- set_fact:
+    vm_exists: "{{ existing_vms is search(vm_already_exists_pattern) }}"
+
+- pause:
+    prompt: "Do you want to delete existing vm (yes/no)?"
+  register: vm_confirm_delete
+  delegate_to: localhost
+  when: vm_exists
+
+- set_fact:
+    vm_destroy: "{{ vm_confirm_delete.user_input == 'yes' }}"
+  when: vm_exists
+
+- name: Destroy existing vm with id {{ vm_id_to_check }}
+  command: qm destroy {{ vm_id_to_check }}
+  when: vm_destroy|default(false)

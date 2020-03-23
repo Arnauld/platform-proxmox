@@ -1,0 +1,66 @@
+---
+- name: Check if vm {{ vm_id }} already exists first...
+  include_role: 
+    name: proxmox/check-and-destroy-vm
+  vars:
+    vm_id_to_check: "{{ vm_id }}"
+
+- name: Create VM from template {{ template_vm_id }}
+  command: qm clone {{ template_vm_id }} {{ vm_id }} --name {{ vm_name }}
+
+- name: Adjust disk size
+  command: qm resize {{ vm_id }} scsi0 {{ vm_disk_delta }}
+
+#- name: create temporary folder to copy ssh keys in
+#  tempfile: 
+#    state: directory
+#    suffix: sshkeys
+#  register: tmpdir_sshkeys
+#
+#- name: copy ssh keys
+#  copy:
+#    src: "{{ item }}"
+#    dest: "{{ tmpdir_sshkeys.path }}"
+#  with_fileglob:
+#    - "../pub_keys/{{ vm_root_keys }}/*.pub"
+#  
+#- name: install ssh keys in vm
+#  command: qm set {{ vm_id }} --sshkey "{{ tmpdir_sshkeys.path + "/" + (item|basename) }}"
+#  with_fileglob:
+#    - "../pub_keys/{{ vm_root_keys }}/*.pub"
+#
+#- name: cleanup temporary folder...
+#  file:
+#    path: "{{ tmpdir_sshkeys.path }}"
+#    state: absent
+#  when: tmpdir_sshkeys.path is defined
+
+- name: concat sshkeys
+  set_fact:
+    sshkeys: "{{ lookup('pipe', 'cat ../pub_keys/{{ vm_root_keys }}/*.pub') }}"
+
+- name: create a tempory file to copy the ssh keys in
+  tempfile:
+    state: file
+    suffix: sshkeys
+  register: tmpfile_sshkeys
+
+- name: import sshkeys
+  copy:
+    dest: "{{ tmpfile_sshkeys.path }}"
+    content: "{{ sshkeys }}"
+
+- name: install ssh keys in vm
+  command: qm set {{ vm_id }} --sshkey "{{ tmpfile_sshkeys.path }}"
+
+- name: cleanup temporary file...
+  file:
+    path: "{{ tmpfile_sshkeys.path }}"
+    state: absent
+  when: tmpfile_sshkeys.path is defined
+
+- name: associate ip address...
+  command: qm set {{ vm_id }} --ipconfig0 ip={{ vm_ip }}/24,gw={{ gateway_ip }}
+
+- name: start vm
+  command: qm start {{ vm_id }}

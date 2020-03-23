@@ -1,0 +1,7 @@
+template_vm_id: 1910
+gateway_ip: 192.168.0.1
+vm_id: 10001
+vm_ip: 192.168.1.200
+vm_name: vm-{{ vm_id }}
+vm_disk_delta: "+8G"
+vm_memory: 2048
