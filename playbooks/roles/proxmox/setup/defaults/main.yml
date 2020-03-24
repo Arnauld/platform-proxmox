@@ -1,0 +1,8 @@
+interfaces:
+  - int_name: vmbr1
+    ip_address: "192.168.15.20/23"
+    bridge_ports: "WAN"
+    bridge_stp: "off"
+    bridge_fd: "0"
+
+

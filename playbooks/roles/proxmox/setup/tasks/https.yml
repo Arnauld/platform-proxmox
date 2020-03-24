@@ -1,0 +1,13 @@
+- name: https certificate - prepare post hoot script
+  template:
+    src: letsencrypt-renew-certs.sh.j2
+    dest: /usr/local/bin/renew-pve-certs.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: https certificate - let's encrypt
+  include_role:
+    name: letsencrypt
+  vars:
+    certbot_post_hook: /usr/local/bin/renew-pve-certs.sh

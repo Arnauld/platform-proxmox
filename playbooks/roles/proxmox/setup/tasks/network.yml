@@ -1,0 +1,25 @@
+---
+- name: Add network interfaces to /etc/network/interfaces
+  blockinfile:
+    dest: /etc/network/interfaces
+    block: |
+        auto {{ item.int_name }}
+        iface {{ item.int_name }} inet static
+            address {{ item.ip_address }}
+            bridge_ports {{ item.bridge_ports }}
+            bridge_stp {{ item.bridge_stp }}
+            bridge_fd {{ item.bridge_fd }}
+    insertafter: '^# ansible managed'
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.int_name }}"
+  with_items:
+        "{{ interfaces }}"
+
+- name: restart interface(s)
+  command: ifdown {{ item.int_name }} && ifup {{ item.int_name }}
+  with_items:
+        "{{ interfaces }}"
+
+- name: tinc
+  package:
+    name: 'tinc'
+    state: 'present' 

@@ -59,6 +59,10 @@
     state: absent
   when: tmpfile_sshkeys.path is defined
 
+- name: default user and password
+  # for password hack, see https://github.com/ansible/ansible/issues/24425#issuecomment-300335666
+  command: qm set {{ vm_id }} --ciuser {{ vm_root_username }} --cipassword {{ '%s'| format(vm_root_password) | password_hash('sha512') }}
+
 - name: associate ip address...
   command: qm set {{ vm_id }} --ipconfig0 ip={{ vm_ip }}/24,gw={{ gateway_ip }}
 

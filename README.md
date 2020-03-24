@@ -51,3 +51,7 @@ ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_setup.yml -u a
 ```
 ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_create_template.yml -u arnauld -vvv
 ```
+
+```
+ansible-playbook -i inventory/infra-alo/proxmox playbooks/proxmox_create_vm.yml -u arnauld --vault-password-file ~/.vault/proxmox-vault-key.txt  -vvv
+```
