@@ -42,7 +42,7 @@
     name: letsencrypt
   vars:
     certbot_post_hook: /usr/local/bin/renew-pve-certs.sh
-  
+
 - name: Restart service pveproxy 
   systemd:
     name: pveproxy
