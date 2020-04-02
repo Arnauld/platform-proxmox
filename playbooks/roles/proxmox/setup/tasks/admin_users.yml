@@ -1,0 +1,21 @@
+- name: Check if admin group exists
+  command: pveum group list --noheader true --noborder true
+  register: existing_groups
+
+- set_fact:
+    admin_group_exists: "{{ existing_groups is search('admin .+') }}"
+
+- name: Declare admin group
+  command: pveum groupadd admin -comment "System Administrators"
+  when: not admin_group_exists
+
+- name: Admin ACL
+  command: pveum aclmod / -group admin -role Administrator
+
+- name: Add {{ proxmox.admin_users|default([]) }} users
+  command: pveum useradd {{ item }}
+  with_items: "{{ proxmox.admin_users|default([]) }}"
+
+- name: Add users to admin group
+  command: pveum usermod {{ item }} -group admin
+  with_items: "{{ proxmox.admin_users|default([]) }}"

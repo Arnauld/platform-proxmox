@@ -1,6 +1,7 @@
 ---
 proxmox_mode: "free"
 contact_mail: "arnauld.loyer@gmail.com"
+fail2ban_email: "arnauld.loyer@gmail.com"
 domain_name: proxmox.technbolts.org
 api_username: 'root@pam'
 api_password: !vault |
@@ -20,3 +21,7 @@ vm_root_password: !vault |
             38633963363464323734383766396536346136343662356331663536633462336561613832356461
             3034633630636631630a623230636638633162313039363735303238336432353861396461323439
             3337
+
+proxmox:
+    admin_users:
+        - admin@pam

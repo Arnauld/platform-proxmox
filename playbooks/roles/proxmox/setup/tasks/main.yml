@@ -3,9 +3,9 @@
   apt:
     upgrade: 'dist'
 
+- include_tasks: admin_users.yml
 - include_tasks: ansible.yml
 - include_tasks: https.yml
-- include_tasks: network.yml
 
 - name: Restart service pveproxy 
   systemd:
