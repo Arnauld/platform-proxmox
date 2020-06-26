@@ -1,7 +1,7 @@
 ---
 proxmox_mode: "free"
-contact_mail: "arnauld.loyer@gmail.com"
-fail2ban_email: "arnauld.loyer@gmail.com"
+contact_mail: "arnauld.loyerXXX"
+fail2ban_email: "arnauld.loyerXXX"
 domain_name: proxmox.technbolts.org
 api_username: 'root@pam'
 api_password: !vault |
